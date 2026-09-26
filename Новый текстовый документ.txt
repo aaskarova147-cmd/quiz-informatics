@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Тест: Компьютер, ПО и цифровая среда</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+            background: linear-gradient(145deg, #f0f4ff 0%, #e6ecfe 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            margin: 0;
+        }
+
+        .quiz-wrapper {
+            max-width: 750px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -10px rgba(0, 20, 60, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            padding: 28px 22px 32px;
+            transition: all 0.2s ease;
+        }
+
+        .header-icons {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .header-icons span {
+            font-size: 2.2rem;
+            line-height: 1;
+            filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.1));
+            transition: transform 0.2s;
+        }
+
+        .header-icons span:hover {
+            transform: scale(1.1) rotate(2deg);
+        }
+
+        h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            text-align: center;
+            color: #0b1e4b;
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #4a5b7a;
+            font-size: 1rem;
+            font-weight: 400;
+            margin-bottom: 24px;
+            border-bottom: 2px solid rgba(98, 124, 196, 0.2);
+            padding-bottom: 16px;
+        }
+
+        .question-card {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 22px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px -6px rgba(0, 20, 50, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            transition: box-shadow 0.2s;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 12px 28px -8px rgba(30, 60, 130, 0.15);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #d9e3fc;
+            color: #1e3a8a;
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 4px 14px;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+            margin-bottom: 10px;
+            border: 1px solid #b8c9f0;
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.18rem;
+            color: #0d1f44;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: #f5f8ff;
+            border-radius: 18px;
+            padding: 14px 16px;
+            border: 2px solid transparent;
+            transition: all 0.15s;
+            cursor: pointer;
+            user-select: none;
+            font-size: 1rem;
+            color: #1c2b4a;
+            line-height: 1.4;
+        }
+
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            margin-top: 3px;
+            width: 20px;
+            height: 20px;
+            accent-color: #2b4b9a;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .option input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            border: 2px solid #d0ddea;
+            background: white;
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            transition: border 0.15s;
+        }
+
+        .option input[type="text"]:focus {
+            border-color: #2b4b9a;
+            box-shadow: 0 0 0 3px rgba(43, 75, 154, 0.15);
+        }
+
+        .option.selectable {
+            border: 2px solid #e2eaf9;
+        }
+
+        .option.selectable:hover {
+            background: #eef3fe;
+            border-color: #b7cbff;
+        }
+
+        .option.checkbox-option {
+            border-left: 6px solid #a5b9e5;
+        }
+
+        /* --- Стили для соответствия --- */
+        .match-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .match-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            background: #f5f8ff;
+            border-radius: 18px;
+            padding: 12px 16px;
+            border: 2px solid #e2eaf9;
+            transition: border 0.15s;
+        }
+
+        .match-row:hover {
+            border-color: #b7cbff;
+            background: #eef3fe;
+        }
+
+        .match-left {
+            font-weight: 600;
+            color: #0d1f44;
+            min-width: 140px;
+            flex: 1 1 auto;
+        }
+
+        .match-row select {
+            padding: 10px 14px;
+            border-radius: 16px;
+            border: 2px solid #d0ddea;
+            background: white;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: #1c2b4a;
+            outline: none;
+            cursor: pointer;
+            flex: 1 1 140px;
+            min-width: 120px;
+            transition: border 0.15s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232b4b9a' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 12px;
+        }
+
+        .match-row select:focus {
+            border-color: #2b4b9a;
+            box-shadow: 0 0 0 3px rgba(43, 75, 154, 0.15);
+        }
+
+        .match-hint {
+            font-size: 0.85rem;
+            color: #5f6f8f;
+            margin-top: 8px;
+            margin-left: 8px;
+        }
+
+        .hint {
+            font-size: 0.85rem;
+            color: #5f6f8f;
+            margin-top: 6px;
+            margin-left: 8px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #1f3b7a 0%, #2b4fa0 100%);
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 18px 24px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            width: 100%;
+            margin-top: 18px;
+            cursor: pointer;
+            box-shadow: 0 16px 30px -8px #1e3f8b70;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 22px 35px -8px #1e3f8baa;
+            background: linear-gradient(135deg, #17336b 0%, #23428a 100%);
+        }
+
+        .btn-submit:active {
+            transform: translateY(2px);
+            box-shadow: 0 8px 18px -6px #1e3f8b;
+        }
+
+        .result-panel {
+            margin-top: 22px;
+            background: #e9f0fe;
+            border-radius: 28px;
+            padding: 24px 20px;
+            text-align: center;
+            border: 2px solid #c6d9ff;
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(12px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-panel.show {
+            display: block;
+        }
+
+        .score-big {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: #0b1e4b;
+            line-height: 1.1;
+        }
+
+        .score-label {
+            font-size: 1rem;
+            color: #3e5077;
+            margin-bottom: 8px;
+        }
+
+        .grade {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #1f3b7a;
+            margin: 12px 0 8px;
+        }
+
+        .feedback {
+            font-size: 1rem;
+            color: #2b3e63;
+            background: #ffffffc0;
+            padding: 14px 16px;
+            border-radius: 22px;
+            margin-top: 16px;
+            text-align: left;
+            border: 1px solid #c9d9ff;
+            max-height: 380px;
+            overflow-y: auto;
+        }
+
+        .feedback ul {
+            padding-left: 20px;
+            margin-top: 6px;
+        }
+
+        .feedback li {
+            margin-bottom: 4px;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #7688a8;
+            margin-top: 18px;
+        }
+
+        @media (max-width: 480px) {
+            .quiz-wrapper {
+                padding: 20px 14px 24px;
+                border-radius: 28px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            .question-text {
+                font-size: 1.05rem;
+            }
+            .option {
+                padding: 12px 14px;
+                font-size: 0.95rem;
+            }
+            .btn-submit {
+                font-size: 1.1rem;
+                padding: 16px 18px;
+            }
+            .score-big {
+                font-size: 2.6rem;
+            }
+            .header-icons span {
+                font-size: 1.8rem;
+            }
+            .match-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .match-left {
+                min-width: auto;
+            }
+            .match-row select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-wrapper">
+    <div class="header-icons">
+        <span>💻</span>
+        <span>🖥️</span>
+        <span>📁</span>
+        <span>☁️</span>
+        <span>🔒</span>
+    </div>
+
+    <h1>Компьютер, ПО<br>и цифровая среда</h1>
+    <div class="subhead">Проверь свои знания · 12 вопросов</div>
+
+    <form id="quizForm">
+        <!-- Q1 -->
+        <div class="question-card">
+            <div class="question-number">Вопрос 1</div>
+            <div class="question-text">Что такое компьютер?</div>
+            <div class="options">
+                <label class="option selectable">
+                    <input type="radio" name="q1" value="a"> устройство для печати документов
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q1" value="b"> электронное устройство для хранения, обработки, передачи и представления информации
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q1" value="c"> программа для работы с текстом
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q1" value="d"> устройство для подключения к Интернету
+                </label>
+            </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question-card">
+            <div class="question-number">Вопрос 2</div>
+            <div class="question-text">Какой компонент компьютера выполняет команды и осуществляет обработку данных?</div>
+            <div class="options">
+                <label class="option selectable">
+                    <input type="radio" name="q2" value="a"> оперативная память
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q2" value="b"> накопитель SSD
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q2" value="c"> процессор
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q2" value="d"> монитор
+                </label>
+            </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question-card">
+            <div class="question-number">Вопрос 3</div>
+            <div class="question-text">Что относится к системному программному обеспечению?</div>
+            <div class="options">
+                <label class="option selectable">
+                    <input type="radio" name="q3" value="a"> текстовый редактор
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q3" value="b"> операционная система
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q3" value="c"> браузер
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q3" value="d"> архиватор
+                </label>
+            </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question-card">
+            <div class="question-number">Вопрос 4</div>
+            <div class="question-text">Что такое файл?</div>
+            <div class="options">
+                <label class="option selectable">
+                    <input type="radio" name="q4" value="a"> папка для хранения документов
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q4" value="b"> именованная область хранения данных
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q4" value="c"> программа для обработки данных
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q4" value="d"> устройство ввода информации
+                </label>
+            </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="question-card">
+            <div class="question-number">Вопрос 5</div>
+            <div class="question-text">Какое расширение соответствует текстовому документу Microsoft Word?</div>
+            <div class="options">
+                <label class="option selectable">
+                    <input type="radio" name="q5" value="a"> .xlsx
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q5" value="b"> .pptx
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q5" value="c"> .docx
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q5" value="d"> .zip
+                </label>
+            </div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="question-card">
+            <div class="question-number">Вопрос 6</div>
+            <div class="question-text">Что такое архивирование?</div>
+            <div class="options">
+                <label class="option selectable">
+                    <input type="radio" name="q6" value="a"> удаление ненужных файлов
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q6" value="b"> объединение одного или нескольких файлов в архив
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q6" value="c"> копирование файлов на флешку
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q6" value="d"> создание резервной копии
+                </label>
+            </div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="question-card">
+            <div class="question-number">Вопрос 7</div>
+            <div class="question-text">Чем архив отличается от резервной копии?</div>
+            <div class="options">
+                <label class="option selectable">
+                    <input type="radio" name="q7" value="a"> ничем, это одно и то же
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q7" value="b"> архив — способ объединения и сжатия файлов, а резервная копия — дополнительная копия данных для восстановления
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q7" value="c"> архив создаётся только в облаке
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q7" value="d"> резервная копия всегда меньше архива
+                </label>
+            </div>
+        </div>
+
+        <!-- Q8: множественный выбор -->
+        <div class="question-card">
+            <div class="question-number">Вопрос 8</div>
+            <div class="question-text">Что из перечисленного относится к принципам организации личного цифрового пространства? <span style="font-weight:400; color:#5f6f8f;">(выберите все верные)</span></div>
+            <div class="options">
+                <label class="option checkbox-option">
+                    <input type="checkbox" name="q8" value="a"> хранение всех файлов на рабочем столе
+                </label>
+                <label class="option checkbox-option">
+                    <input type="checkbox" name="q8" value="b"> понятная структура папок и единые правила именования
+                </label>
+                <label class="option checkbox-option">
+                    <input type="checkbox" name="q8" value="c"> отказ от резервного копирования
+                </label>
+                <label class="option checkbox-option">
+                    <input type="checkbox" name="q8" value="d"> удаление ненужных копий и контроль версий документов
+                </label>
+                <label class="option checkbox-option">
+                    <input type="checkbox" name="q8" value="e"> разделение личных, учебных и рабочих материалов
+                </label>
+            </div>
+            <div class="hint">Можно выбрать несколько вариантов</div>
+        </div>
+
+        <!-- Q9: текстовый ввод -->
+        <div class="question-card">
+            <div class="question-number">Вопрос 9</div>
+            <div class="question-text">Какие права доступа следует предоставить пользователю, которому нужно только ознакомиться с документом? <span style="font-weight:400; color:#5f6f8f;">(введите одно слово)</span></div>
+            <div class="options" style="display:block;">
+                <input type="text" name="q9" placeholder="Например: просмотр" autocomplete="off">
+            </div>
+            <div class="hint">Ответ: просмотр (или просмотр/чтение)</div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="question-card">
+            <div class="question-number">Вопрос 10</div>
+            <div class="question-text">Какое правило безопасной работы с файлами является верным?</div>
+            <div class="options">
+                <label class="option selectable">
+                    <input type="radio" name="q10" value="a"> можно передавать пароли одногруппникам
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q10" value="b"> можно открывать любые вложения из неизвестных писем
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q10" value="c"> нельзя передавать свои пароли другим пользователям
+                </label>
+                <label class="option selectable">
+                    <input type="radio" name="q10" value="d"> реальные медицинские данные можно размещать в общедоступных сервисах
+                </label>
+            </div>
+        </div>
+
+        <!-- Q11: СООТВЕТСТВИЕ 1 -->
+        <div class="question-card">
+            <div class="question-number">Вопрос 11</div>
+            <div class="question-text">Соотнесите компонент компьютера с его назначением.</div>
+            <div class="match-container">
+                <div class="match-row">
+                    <span class="match-left">Процессор</span>
+                    <select name="m1">
+                        <option value="">— выберите —</option>
+                        <option value="a">выполняет команды и обрабатывает данные</option>
+                        <option value="b">временно хранит данные и программы</option>
+                        <option value="c">обеспечивает долговременное хранение информации</option>
+                        <option value="d">выводит визуальную информацию</option>
+                    </select>
+                </div>
+                <div class="match-row">
+                    <span class="match-left">Оперативная память</span>
+                    <select name="m2">
+                        <option value="">— выберите —</option>
+                        <option value="a">выполняет команды и обрабатывает данные</option>
+                        <option value="b">временно хранит данные и программы</option>
+                        <option value="c">обеспечивает долговременное хранение информации</option>
+                        <option value="d">выводит визуальную информацию</option>
+                    </select>
+                </div>
+                <div class="match-row">
+                    <span class="match-left">Накопитель SSD/HDD</span>
+                    <select name="m3">
+                        <option value="">— выберите —</option>
+                        <option value="a">выполняет команды и обрабатывает данные</option>
+                        <option value="b">временно хранит данные и программы</option>
+                        <option value="c">обеспечивает долговременное хранение информации</option>
+                        <option value="d">выводит визуальную информацию</option>
+                    </select>
+                </div>
+                <div class="match-row">
+                    <span class="match-left">Монитор</span>
+                    <select name="m4">
+                        <option value="">— выберите —</option>
+                        <option value="a">выполняет команды и обрабатывает данные</option>
+                        <option value="b">временно хранит данные и программы</option>
+                        <option value="c">обеспечивает долговременное хранение информации</option>
+                        <option value="d">выводит визуальную информацию</option>
+                    </select>
+                </div>
+            </div>
+            <div class="match-hint">Выберите подходящий вариант для каждого компонента</div>
+        </div>
+
+        <!-- Q12: СООТВЕТСТВИЕ 2 (формат — применение) -->
+        <div class="question-card">
+            <div class="question-number">Вопрос 12</div>
+            <div class="question-text">Соотнесите расширение файла с его типичным применением.</div>
+            <div class="match-container">
+                <div class="match-row">
+                    <span class="match-left">.docx</span>
+                    <select name="m5">
+                        <option value="">— выберите —</option>
+                        <option value="a">редактируемые текстовые документы</option>
+                        <option value="b">передача, публикация, печать</option>
+                        <option value="c">расчёты и обработка данных</option>
+                        <option value="d">компьютерные презентации</option>
+                        <option value="e">объединение и сжатие файлов</option>
+                    </select>
+                </div>
+                <div class="match-row">
+                    <span class="match-left">.pdf</span>
+                    <select name="m6">
+                        <option value="">— выберите —</option>
+                        <option value="a">редактируемые текстовые документы</option>
+                        <option value="b">передача, публикация, печать</option>
+                        <option value="c">расчёты и обработка данных</option>
+                        <option value="d">компьютерные презентации</option>
+                        <option value="e">объединение и сжатие файлов</option>
+                    </select>
+                </div>
+                <div class="match-row">
+                    <span class="match-left">.xlsx</span>
+                    <select name="m7">
+                        <option value="">— выберите —</option>
+                        <option value="a">редактируемые текстовые документы</option>
+                        <option value="b">передача, публикация, печать</option>
+                        <option value="c">расчёты и обработка данных</option>
+                        <option value="d">компьютерные презентации</option>
+                        <option value="e">объединение и сжатие файлов</option>
+                    </select>
+                </div>
+                <div class="match-row">
+                    <span class="match-left">.pptx</span>
+                    <select name="m8">
+                        <option value="">— выберите —</option>
+                        <option value="a">редактируемые текстовые документы</option>
+                        <option value="b">передача, публикация, печать</option>
+                        <option value="c">расчёты и обработка данных</option>
+                        <option value="d">компьютерные презентации</option>
+                        <option value="e">объединение и сжатие файлов</option>
+                    </select>
+                </div>
+                <div class="match-row">
+                    <span class="match-left">.zip</span>
+                    <select name="m9">
+                        <option value="">— выберите —</option>
+                        <option value="a">редактируемые текстовые документы</option>
+                        <option value="b">передача, публикация, печать</option>
+                        <option value="c">расчёты и обработка данных</option>
+                        <option value="d">компьютерные презентации</option>
+                        <option value="e">объединение и сжатие файлов</option>
+                    </select>
+                </div>
+            </div>
+            <div class="match-hint">Выберите подходящее применение для каждого формата</div>
+        </div>
+
+        <button type="button" class="btn-submit" id="submitBtn">
+            <span>✅</span> Проверить результат
+        </button>
+    </form>
+
+    <div class="result-panel" id="resultPanel">
+        <div class="score-label">Правильных ответов</div>
+        <div class="score-big" id="scoreDisplay">0</div>
+        <div class="grade" id="gradeDisplay"></div>
+        <div class="feedback" id="feedbackDisplay"></div>
+    </div>
+
+    <div class="footer-note">
+        👩‍🏫 Информатика · тема «Компьютер, ПО и цифровая среда»
+    </div>
+</div>
+
+<script>
+    (function() {
+        const submitBtn = document.getElementById('submitBtn');
+        const resultPanel = document.getElementById('resultPanel');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const gradeDisplay = document.getElementById('gradeDisplay');
+        const feedbackDisplay = document.getElementById('feedbackDisplay');
+
+        // Всего вопросов: 12 (каждый оценивается в 1 балл, кроме Q11 и Q12 — каждый правильный выбор = 0.25 балла, но суммируем до 1 балла)
+        // Для простоты: Q1–Q10 — по 1 баллу; Q11 — 1 балл (все 4 верно), Q12 — 1 балл (все 5 верно)
+        // Максимум: 12 баллов.
+
+        const correctAnswers = {
+            q1: 'b',
+            q2: 'c',
+            q3: 'b',
+            q4: 'b',
+            q5: 'c',
+            q6: 'b',
+            q7: 'b',
+            q8: ['b', 'd', 'e'],
+            q9: ['просмотр', 'просмотр.', 'чтение', 'только просмотр'],
+            q10: 'c',
+            // Q11: m1=a, m2=b, m3=c, m4=d
+            m1: 'a',
+            m2: 'b',
+            m3: 'c',
+            m4: 'd',
+            // Q12: m5=a, m6=b, m7=c, m8=d, m9=e
+            m5: 'a',
+            m6: 'b',
+            m7: 'c',
+            m8: 'd',
+            m9: 'e'
+        };
+
+        function getSelectedRadio(name) {
+            const radios = document.getElementsByName(name);
+            for (let r of radios) {
+                if (r.checked) return r.value;
+            }
+            return null;
+        }
+
+        function getSelectedCheckboxes(name) {
+            const checkboxes = document.getElementsByName(name);
+            const selected = [];
+            for (let cb of checkboxes) {
+                if (cb.checked) selected.push(cb.value);
+            }
+            return selected;
+        }
+
+        function getSelectValue(name) {
+            const sel = document.querySelector(`select[name="${name}"]`);
+            return sel ? sel.value : null;
+        }
+
+        function evaluate() {
+            let score = 0;
+            let details = [];
+
+            // 1
+            const q1 = getSelectedRadio('q1');
+            if (q1 === correctAnswers.q1) { score++; details.push('✅ Вопрос 1 — верно'); }
+            else { details.push('❌ Вопрос 1 — неверно (правильно: электронное устройство для хранения, обработки, передачи и представления информации)'); }
+
+            // 2
+            const q2 = getSelectedRadio('q2');
+            if (q2 === correctAnswers.q2) { score++; details.push('✅ Вопрос 2 — верно'); }
+            else { details.push('❌ Вопрос 2 — неверно (правильно: процессор)'); }
+
+            // 3
+            const q3 = getSelectedRadio('q3');
+            if (q3 === correctAnswers.q3) { score++; details.push('✅ Вопрос 3 — верно'); }
+            else { details.push('❌ Вопрос 3 — неверно (правильно: операционная система)'); }
+
+            // 4
+            const q4 = getSelectedRadio('q4');
+            if (q4 === correctAnswers.q4) { score++; details.push('✅ Вопрос 4 — верно'); }
+            else { details.push('❌ Вопрос 4 — неверно (правильно: именованная область хранения данных)'); }
+
+            // 5
+            const q5 = getSelectedRadio('q5');
+            if (q5 === correctAnswers.q5) { score++; details.push('✅ Вопрос 5 — верно'); }
+            else { details.push('❌ Вопрос 5 — неверно (правильно: .docx)'); }
+
+            // 6
+            const q6 = getSelectedRadio('q6');
+            if (q6 === correctAnswers.q6) { score++; details.push('✅ Вопрос 6 — верно'); }
+            else { details.push('❌ Вопрос 6 — неверно (правильно: объединение одного или нескольких файлов в архив)'); }
+
+            // 7
+            const q7 = getSelectedRadio('q7');
+            if (q7 === correctAnswers.q7) { score++; details.push('✅ Вопрос 7 — верно'); }
+            else { details.push('❌ Вопрос 7 — неверно (правильно: архив — способ объединения и сжатия файлов, а резервная копия — дополнительная копия данных для восстановления)'); }
+
+            // 8 (множественный)
+            const q8selected = getSelectedCheckboxes('q8');
+            const q8correct = correctAnswers.q8;
+            const q8set = new Set(q8selected);
+            const q8correctSet = new Set(q8correct);
+            const q8isCorrect = q8set.size === q8correctSet.size && [...q8set].every(v => q8correctSet.has(v));
+            if (q8isCorrect) { score++; details.push('✅ Вопрос 8 — верно'); }
+            else { details.push('❌ Вопрос 8 — неверно. Правильные варианты: понятная структура папок и единые правила именования; удаление ненужных копий и контроль версий; разделение личных, учебных и рабочих материалов.'); }
+
+            // 9 текстовый
+            const q9input = document.querySelector('input[name="q9"]');
+            const q9val = q9input ? q9input.value.trim().toLowerCase() : '';
+            if (correctAnswers.q9.includes(q9val)) { score++; details.push('✅ Вопрос 9 — верно'); }
+            else { details.push('❌ Вопрос 9 — неверно (правильно: просмотр / чтение)'); }
+
+            // 10
+            const q10 = getSelectedRadio('q10');
+            if (q10 === correctAnswers.q10) { score++; details.push('✅ Вопрос 10 — верно'); }
+            else { details.push('❌ Вопрос 10 — неверно (правильно: нельзя передавать свои пароли другим пользователям)'); }
+
+            // 11 — соответствие компонентов
+            let q11score = 0;
+            const m1 = getSelectValue('m1');
+            const m2 = getSelectValue('m2');
+            const m3 = getSelectValue('m3');
+            const m4 = getSelectValue('m4');
+            if (m1 === correctAnswers.m1) q11score += 0.25;
+            if (m2 === correctAnswers.m2) q11score += 0.25;
+            if (m3 === correctAnswers.m3) q11score += 0.25;
+            if (m4 === correctAnswers.m4) q11score += 0.25;
+            if (q11score === 1) { score++; details.push('✅ Вопрос 11 — верно'); }
+            else if (q11score > 0) { score += q11score; details.push(`⚠️ Вопрос 11 — частично верно (${q11score * 4}/4)`); }
+            else { details.push('❌ Вопрос 11 — неверно'); }
+
+            // 12 — соответствие форматов
+            let q12score = 0;
+            const m5 = getSelectValue('m5');
+            const m6 = getSelectValue('m6');
+            const m7 = getSelectValue('m7');
+            const m8 = getSelectValue('m8');
+            const m9 = getSelectValue('m9');
+            if (m5 === correctAnswers.m5) q12score += 0.2;
+            if (m6 === correctAnswers.m6) q12score += 0.2;
+            if (m7 === correctAnswers.m7) q12score += 0.2;
+            if (m8 === correctAnswers.m8) q12score += 0.2;
+            if (m9 === correctAnswers.m9) q12score += 0.2;
+            if (q12score === 1) { score++; details.push('✅ Вопрос 12 — верно'); }
+            else if (q12score > 0) { score += q12score; details.push(`⚠️ Вопрос 12 — частично верно (${Math.round(q12score * 5)}/5)`); }
+            else { details.push('❌ Вопрос 12 — неверно'); }
+
+            // Округляем итоговый балл до 1 знака после запятой
+            score = Math.round(score * 10) / 10;
+
+            // Оценка (по 12-балльной шкале)
+            let grade = '';
+            if (score >= 11) grade = 'Отлично! 🌟';
+            else if (score >= 8.5) grade = 'Хорошо! 👍';
+            else if (score >= 6) grade = 'Удовлетворительно 📘';
+            else grade = 'Неудовлетворительно 😕';
+
+            // Вывод
+            scoreDisplay.textContent = score;
+            gradeDisplay.textContent = grade;
+
+            let feedbackHtml = '<strong>📋 Разбор ответов:</strong><ul>';
+            details.forEach(d => { feedbackHtml += `<li>${d}</li>`; });
+            feedbackHtml += '</ul>';
+            feedbackDisplay.innerHTML = feedbackHtml;
+
+            resultPanel.classList.add('show');
+            resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        submitBtn.addEventListener('click', evaluate);
+
+        const textInput = document.querySelector('input[name="q9"]');
+        if (textInput) {
+            textInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    evaluate();
+                }
+            });
+        }
+    })();
+</script>
+</body>
+</html>
